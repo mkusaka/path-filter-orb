@@ -3,14 +3,24 @@ setup: true
 orbs:
   orb-tools: circleci/orb-tools@11.1
   shellcheck: circleci/shellcheck@3.1
+  path-filter: mkusaka/path-filter@dev:1e73b3d4ef688e844f739d049ee330b398612c5d
 
 filters: &filters
   tags:
     only: /.*/
 
+jobs:
+  runcheck:
+    docker:
+      - image: cimg/base:2022.04
+    steps:
+      - path-filter/greet:
+          to: filter
+
 workflows:
   lint-pack:
     jobs:
+      - runcheck
       - orb-tools/lint:
           filters: *filters
       - orb-tools/pack:
