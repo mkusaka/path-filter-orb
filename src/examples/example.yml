@@ -6,7 +6,7 @@ description: >
 usage:
   version: 2.1
   orbs:
-    path-filter: mkusaka/path-filter@0.0.2
+    path-filter: mkusaka/path-filter@0.0.3
   jobs:
     test:
       docker:
