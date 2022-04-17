@@ -28,7 +28,7 @@ commands:
           environment:
             FILTER_BASE_REVISION: << parameters.base_revision >>
             FILTER_HEAD_REVISION: << parameters.head_revision >>
-            FILTER_REMOTE: << pipeline.project.url >>
+            FILTER_REMOTE: << pipeline.project.git_url >>
             FILTER_PATH: << parameters.path >>
             FILTER_TYPE: << parameters.filter_type >>
           command: |
