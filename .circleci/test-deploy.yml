@@ -8,6 +8,45 @@ filters: &filters
     only: /.*/
 
 commands:
+  check_result:
+    parameters:
+      filter_type:
+        type: string
+        default: continue
+      path:
+        type: string
+        default: ''
+      base_revision:
+        type: string
+        default: main
+      head_revision:
+        type: string
+        default: HEAD
+    steps:
+      - run:
+          name: check result << parameters.filter_type >>
+          environment:
+            FILTER_BASE_REVISION: << parameters.base_revision >>
+            FILTER_HEAD_REVISION: << parameters.head_revision >>
+            FILTER_REMOTE: << pipeline.project.url >>
+            FILTER_PATH: << parameters.path >>
+            FILTER_TYPE: << parameters.filter_type >>
+          command: |
+            set -x
+            if [ "$FILTER_TYPE" == "continue" ]; then
+              if ! git diff "$FILTER_BASE_REVISION".."$FILTER_HEAD_REVISION" --name-only | grep -q -E "$FILTER_PATH"; then
+                echo expected unreached here, type: "$FILTER_TYPE"
+                exit 1
+              fi
+            fi
+
+            if [ "$FILTER_TYPE" == "stop" ]; then
+              if git diff "$FILTER_BASE_REVISION".."$FILTER_HEAD_REVISION" --name-only | grep -q -E "$FILTER_PATH"; then
+                echo expected unreached here, type: "$FILTER_TYPE"
+                exit 1
+              fi
+            fi
+
   shallow_checkout:
     parameters:
       depth:
@@ -50,6 +89,11 @@ jobs:
             path: .circleci/.*
             base_revision: << parameters.base_revision >>
             head_revision: << parameters.head_revision >>
+        - check_result:
+            path: .circleci/.*
+            base_revision: << parameters.base_revision >>
+            head_revision: << parameters.head_revision >>
+            filter_type: continue
     command-stop:
       parameters:
         depth:
@@ -71,6 +115,11 @@ jobs:
             path: .circleci/.*
             base_revision: << parameters.base_revision >>
             head_revision: << parameters.head_revision >>
+        - check_result:
+            path: .circleci/.*
+            base_revision: << parameters.base_revision >>
+            head_revision: << parameters.head_revision >>
+            filter_type: continue
 workflows:
   test-deploy:
     jobs:
