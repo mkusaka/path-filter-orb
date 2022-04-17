@@ -3,10 +3,12 @@ description: >
 parameters:
   base-revision:
     type: string
+    # << pipeline.git.base_revision >> is exact value what this orb want. But orb can't ref that due to limitation for orb to pipeline parameters.
     default: main
     description: "The revision to compare the head one against for the purpose of determining changed files."
   head-revision:
     type: string
+    # << pipeline.git.revision >> is exact value what this orb want. But orb can't ref that due to limitation for orb to pipeline parameters.
     default: HEAD
     description: "The revision to compare the base one against for the purpose of determining changed files."
   path:
@@ -14,6 +16,7 @@ parameters:
     description: "The path regex to determining changed files."
   remote:
     type: string
+    # << pipeline.project.url >> is exact value what this orb want. But orb can't ref that due to limitation for orb to pipeline parameters.
     default: origin
     description: "The target git remote."
 steps:
