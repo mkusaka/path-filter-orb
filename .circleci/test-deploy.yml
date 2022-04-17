@@ -40,13 +40,6 @@ commands:
               fi
             fi
 
-            if [ "$FILTER_TYPE" == "stop" ]; then
-              if git diff "$FILTER_BASE_REVISION".."$FILTER_HEAD_REVISION" --name-only | grep -q -E "$FILTER_PATH"; then
-                echo expected unreached here, type: "$FILTER_TYPE"
-                exit 1
-              fi
-            fi
-
   shallow_checkout:
     parameters:
       depth:
