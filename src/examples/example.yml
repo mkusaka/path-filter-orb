@@ -11,11 +11,11 @@ usage:
     test:
       docker:
         - image: cimg/base:current
-    resource_class: small
-    steps:
-      - checkout
-      - path-filter/stop:
-          path: .circleci/.*
+      resource_class: small
+      steps:
+        - checkout
+        - path-filter/stop:
+            path: .circleci/.*
   workflows:
     use-my-orb:
       jobs:
