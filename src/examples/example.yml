@@ -16,6 +16,8 @@ usage:
         - checkout
         - path-filter/stop:
             path: .circleci/.*
+            base-revision: << pipeline.git.base_revision >>
+            head-revision: << pipeline.git.revision >>
   workflows:
     use-my-orb:
       jobs:

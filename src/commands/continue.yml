@@ -3,18 +3,18 @@ description: >
 parameters:
   base-revision:
     type: string
-    default: << pipeline.git.base_revision >>
+    default: main
     description: "The revision to compare the head one against for the purpose of determining changed files."
   head-revision:
     type: string
-    default: << pipeline.git.revision >>
+    default: HEAD
     description: "The revision to compare the base one against for the purpose of determining changed files."
   path:
     type: string
     description: "The path regex to determining changed files."
   remote:
     type: string
-    default: << pipeline.project.git_url >>
+    default: origin
     description: "The target git remote."
 steps:
   - run:
