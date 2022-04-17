@@ -6,8 +6,19 @@ description: >
 usage:
   version: 2.1
   orbs:
-    path-filter: mkusaka/path-filter@0.0.1
+    path-filter: mkusaka/path-filter@0.0.2
+  jobs:
+    test:
+      docker:
+        - image: cimg/base:current
+      resource_class: small
+      steps:
+        - checkout
+        - path-filter/stop:
+            path: .circleci/.*
+            base_revision: << pipeline.git.base_revision >>
+            head_revision: << pipeline.git.revision >>
   workflows:
     use-my-orb:
       jobs:
-        - mkusaka/greet
+        - test

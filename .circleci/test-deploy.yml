@@ -7,21 +7,103 @@ filters: &filters
   tags:
     only: /.*/
 
+commands:
+  shallow_checkout:
+    parameters:
+      depth:
+        type: integer
+        default: 1
+    steps:
+      - run:
+          name: shallow checkout
+          command: |
+            mkdir -p ~/.ssh
+            ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+            if [ "<< parameters.depth >>" -gt 0 ]; then
+              git clone --depth << parameters.depth >> "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
+            else
+              git clone "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
+            fi
+
 jobs:
     # Create a job to test the commands of your orbs.
     # You may want to add additional validation steps to ensure the commands are working as expected.
-    command-tests:
+    command-continue:
+      parameters:
+        depth:
+          type: integer
+          default: 1
+        base_revision:
+          type: string
+          default: main
+        head_revision:
+          type: string
+          default: HEAD
       docker:
         - image: cimg/base:current
       steps:
-        - checkout
+        - shallow_checkout:
+            depth: << parameters.depth >>
         # Run your orb's commands to validate them.
-        - path-filter/greet
+        - path-filter/continue:
+            path: .circleci/.*
+            base_revision: << parameters.base_revision >>
+            head_revision: << parameters.head_revision >>
+    command-stop:
+      parameters:
+        depth:
+          type: integer
+          default: 1
+        base_revision:
+          type: string
+          default: main
+        head_revision:
+          type: string
+          default: HEAD
+      docker:
+        - image: cimg/base:current
+      steps:
+        - shallow_checkout:
+            depth: << parameters.depth >>
+        # Run your orb's commands to validate them.
+        - path-filter/stop:
+            path: .circleci/.*
+            base_revision: << parameters.base_revision >>
+            head_revision: << parameters.head_revision >>
 workflows:
   test-deploy:
     jobs:
       # Make sure to include "filters: *filters" in every test job you want to run as part of your deployment.
-      - command-tests:
+      - command-continue:
+          matrix:
+            parameters:
+              depth:
+                - 1
+                - 0
+              base_revision:
+                - << pipeline.git.base_revision >>
+                - main
+                - HEAD
+              head_revision:
+                - << pipeline.git.revision >>
+                - main
+                - HEAD
+          filters: *filters
+      - command-stop:
+          matrix:
+            parameters:
+              depth:
+                - 1
+                - 0
+              base_revision:
+                - << pipeline.git.base_revision >>
+                - main
+                - HEAD
+              head_revision:
+                - << pipeline.git.revision >>
+                - main
+                - HEAD
           filters: *filters
       - orb-tools/pack:
           filters: *filters
@@ -31,7 +113,8 @@ workflows:
           pub-type: production
           requires:
             - orb-tools/pack
-            - command-tests
+            - command-continue
+            - command-stop
           context: orb-publishing
           filters:
             branches:
