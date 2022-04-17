@@ -1,0 +1,34 @@
+description: >
+  Continue job if changed files match given path regex.
+parameters:
+  base-revision:
+    type: string
+    default: << pipeline.git.base_revision >>
+    description: "The revision to compare the head one against for the purpose of determining changed files."
+  head-revision:
+    type: string
+    default: << pipeline.git.revision >>
+    description: "The revision to compare the base one against for the purpose of determining changed files."
+  path:
+    type: string
+    description: "The path regex to determining changed files."
+  remote:
+    type: string
+    default: << pipeline.project.git_url >>
+    description: "The target git remote."
+steps:
+  - run:
+      environment:
+        FILTER_BASE_REVISION: << parameters.base-revision >>
+        FILTER_HEAD_REVISION: << parameters.head-revision >>
+        FILTER_REMOTE: << parameters.remote >>
+      name: Prepare for check
+      command: << include(scripts/prepare.sh) >>
+  - run:
+      environment:
+        FILTER_BASE_REVISION: << parameters.base-revision >>
+        FILTER_HEAD_REVISION: << parameters.head-revision >>
+        FILTER_PATH: << parameters.path >>
+        FILTER_REMOTE: << parameters.remote >>
+      name: Check changed paths and continue if change detected
+      command: << include(scripts/continue.sh) >>

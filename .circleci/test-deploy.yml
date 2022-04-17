@@ -16,7 +16,10 @@ jobs:
       steps:
         - checkout
         # Run your orb's commands to validate them.
-        - path-filter/greet
+        - path-filter/continue:
+            path: .circleci/.*
+        - path-filter/stop:
+            path: .circleci/.*
 workflows:
   test-deploy:
     jobs:

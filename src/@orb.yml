@@ -1,17 +1,11 @@
 version: 2.1
 
 description: >
-  Sample orb description
-  This orb published for test
-  This orb published for test
-  This orb published for test
-  This orb published for test
+  This orb privides simple path filtering with two commands.
+  continue: Continue if no change detected & stop if change detected.
+  stop: Stop if no change detected & continue if change detected.
 
 # This information will be displayed in the orb registry and is not mandatory.
 display:
   home_url: "https://github.com/mkusaka/path-filter-orb"
   source_url: "https://github.com/mkusaka/path-filter-orb"
-
-# If your orb requires other orbs, you can import them like this. Otherwise remove the "orbs" stanza.
-# orbs:
-#  hello: circleci/hello-build@0.0.5
