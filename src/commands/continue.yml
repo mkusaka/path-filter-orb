@@ -1,12 +1,12 @@
 description: >
   Continue job if changed files match given path regex.
 parameters:
-  base-revision:
+  base_revision:
     type: string
     # << pipeline.git.base_revision >> is exact value what this orb want. But orb can't ref that due to limitation for orb to pipeline parameters.
     default: main
     description: "The revision to compare the head one against for the purpose of determining changed files."
-  head-revision:
+  head_revision:
     type: string
     # << pipeline.git.revision >> is exact value what this orb want. But orb can't ref that due to limitation for orb to pipeline parameters.
     default: HEAD
@@ -22,15 +22,15 @@ parameters:
 steps:
   - run:
       environment:
-        FILTER_BASE_REVISION: << parameters.base-revision >>
-        FILTER_HEAD_REVISION: << parameters.head-revision >>
+        FILTER_BASE_REVISION: << parameters.base_revision >>
+        FILTER_HEAD_REVISION: << parameters.head_revision >>
         FILTER_REMOTE: << parameters.remote >>
       name: Prepare for check
       command: << include(scripts/prepare.sh) >>
   - run:
       environment:
-        FILTER_BASE_REVISION: << parameters.base-revision >>
-        FILTER_HEAD_REVISION: << parameters.head-revision >>
+        FILTER_BASE_REVISION: << parameters.base_revision >>
+        FILTER_HEAD_REVISION: << parameters.head_revision >>
         FILTER_PATH: << parameters.path >>
         FILTER_REMOTE: << parameters.remote >>
       name: Check changed paths and continue if change detected
