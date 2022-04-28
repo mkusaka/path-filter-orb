@@ -70,3 +70,6 @@ We welcome [issues](https://github.com/mkusaka/path-filter-orb/issues) to and [p
 5. Now ensure the version tag selected is semantically accurate based on the changes included.
 6. Click _"Publish Release"_.
     - This will push a new tag and trigger your publishing pipeline on CircleCI.
+
+### TODO
+- add filter branch option such as [filters](https://circleci.com/docs/2.0/configuration-reference/#jobfilters)
